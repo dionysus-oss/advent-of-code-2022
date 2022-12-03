@@ -2,9 +2,10 @@ use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::path::Path;
+use common;
 
 fn main() {
-    let inventory = read_lines("input.txt").unwrap();
+    let inventory = common::read_lines("input.txt").unwrap();
 
     let mut elf_calories = Vec::new();
     let mut current_elf_calories = 0;
@@ -32,10 +33,4 @@ fn main() {
         .sum();
 
     println!("The top three elves are carrying {}", top_elves);
-}
-
-fn read_lines<P>(path: P) -> io::Result<io::Lines<io::BufReader<File>>>
-    where P: AsRef<Path>, {
-    let file = File::open(path)?;
-    Ok(io::BufReader::new(file).lines())
 }
