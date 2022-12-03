@@ -1,8 +1,8 @@
+use common;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::path::Path;
-use common;
 
 fn main() {
     let inventory = common::read_lines("input.txt").unwrap();
@@ -19,18 +19,18 @@ fn main() {
                     current_elf_calories += amount.parse::<i32>().unwrap();
                 }
             }
-            _ => eprintln!("failed to read a line")
+            _ => eprintln!("failed to read a line"),
         }
     }
 
-    println!("The top elf is carrying {}", elf_calories.iter().max().unwrap());
+    println!(
+        "The top elf is carrying {}",
+        elf_calories.iter().max().unwrap()
+    );
 
     elf_calories.sort();
 
-    let top_elves: i32 = elf_calories.iter()
-        .rev()
-        .take(3)
-        .sum();
+    let top_elves: i32 = elf_calories.iter().rev().take(3).sum();
 
     println!("The top three elves are carrying {}", top_elves);
 }
