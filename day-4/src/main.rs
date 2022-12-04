@@ -45,6 +45,7 @@ fn is_contained(left: (i32, i32), right: (i32, i32)) -> bool {
 }
 
 fn is_overlapping(left: (i32, i32), right: (i32, i32)) -> bool {
-    ((left.0 >= right.0 && left.0 <= right.1) || (left.1 >= right.0 && left.1 <= right.1))
+    (left.0 >= right.0 && left.0 <= right.1)
+        || (left.1 >= right.0 && left.1 <= right.1)
         || is_contained(right, left)
 }
