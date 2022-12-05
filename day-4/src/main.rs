@@ -11,23 +11,17 @@ fn main() {
         })
         .collect();
 
-    let fully_contained_count: i32 = section_range_pairs
+    let fully_contained_count: usize = section_range_pairs
         .iter()
-        .map(|pair| {
-            if is_contained(pair.0, pair.1) || is_contained(pair.1, pair.0) {
-                1
-            } else {
-                0
-            }
-        })
-        .sum();
+        .filter(|pair| is_contained(pair.0, pair.1) || is_contained(pair.1, pair.0))
+        .count();
 
     println!("contained count {}", fully_contained_count);
 
-    let overlapping_count: i32 = section_range_pairs
+    let overlapping_count: usize = section_range_pairs
         .iter()
-        .map(|pair| if is_overlapping(pair.0, pair.1) { 1 } else { 0 })
-        .sum();
+        .filter(|pair| is_overlapping(pair.0, pair.1))
+        .count();
 
     println!("overlapping count {}", overlapping_count);
 }
