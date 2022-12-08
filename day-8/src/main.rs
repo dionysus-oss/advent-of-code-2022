@@ -1,6 +1,8 @@
-use common::read_lines;
+use common::{read_lines, Timer};
 
 fn main() {
+    let timer = Timer::start();
+
     let lines: Vec<String> = read_lines("input.txt")
         .unwrap()
         .map(|line| line.unwrap())
@@ -87,4 +89,6 @@ fn main() {
     }
 
     println!("max scenic score {}", max_scenic_score);
+
+    timer.stop();
 }
