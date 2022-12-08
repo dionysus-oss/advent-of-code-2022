@@ -1,7 +1,10 @@
 use common;
+use common::{read_lines, Timer};
 
 fn main() {
-    let plays: Vec<(i8, i8)> = common::read_lines("input.txt")
+    let timer = Timer::start();
+
+    let plays: Vec<(i8, i8)> = read_lines("input.txt")
         .unwrap()
         .map(|line| {
             let line = line.unwrap();
@@ -27,6 +30,8 @@ fn main() {
         .sum();
 
     println!("part 2 - {}", new_score);
+
+    timer.stop();
 }
 
 fn score(theirs: i8, ours: i8) -> i32 {

@@ -1,6 +1,8 @@
-use common::read_lines;
+use common::{read_lines, Timer};
 
 fn main() {
+    let timer = Timer::start();
+
     // <number>-<number>,<number>-<number>
     let section_range_pairs: Vec<((i32, i32), (i32, i32))> = read_lines("input.txt")
         .unwrap()
@@ -24,6 +26,8 @@ fn main() {
         .count();
 
     println!("overlapping count {}", overlapping_count);
+
+    timer.stop();
 }
 
 fn get_range(input: &str) -> (i32, i32) {

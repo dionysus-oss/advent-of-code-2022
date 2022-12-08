@@ -1,4 +1,4 @@
-use common::read_lines;
+use common::{read_lines, Timer};
 use dir::DirContent;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -7,6 +7,8 @@ use std::path::{Path, PathBuf};
 use std::slice::Iter;
 
 fn main() {
+    let timer = Timer::start();
+
     let shell_output: Vec<String> = read_lines("input.txt")
         .unwrap()
         .map(|line| line.unwrap())
@@ -56,6 +58,8 @@ fn main() {
         min_dir_size,
         result.borrow().get_total_size().unwrap()
     );
+
+    timer.stop();
 }
 
 fn compute_child_sizes(dir_sizes: &HashMap<String, RefCell<DirContent>>, for_dir: String) -> i32 {

@@ -1,9 +1,11 @@
 #![feature(iter_next_chunk)]
 
-use common::read_lines;
+use common::{read_lines, Timer};
 use std::collections::{HashSet, VecDeque};
 
 fn main() {
+    let timer = Timer::start();
+
     let input = read_lines("input.txt").unwrap();
     let input_txt = input.last().unwrap().unwrap();
 
@@ -15,6 +17,8 @@ fn main() {
         "number of chars 2 {}",
         find_marker_pos::<14>(input_txt.as_ref())
     );
+
+    timer.stop();
 }
 
 fn find_marker_pos<const N: usize>(input: &str) -> usize {

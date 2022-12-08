@@ -1,11 +1,9 @@
-use common;
-use std::fs::File;
-use std::io;
-use std::io::BufRead;
-use std::path::Path;
+use common::{read_lines, Timer};
 
 fn main() {
-    let inventory = common::read_lines("input.txt").unwrap();
+    let timer = Timer::start();
+
+    let inventory = read_lines("input.txt").unwrap();
 
     let mut elf_calories = Vec::new();
     let mut current_elf_calories = 0;
@@ -33,4 +31,6 @@ fn main() {
     let top_elves: i32 = elf_calories.iter().rev().take(3).sum();
 
     println!("The top three elves are carrying {}", top_elves);
+
+    timer.stop();
 }

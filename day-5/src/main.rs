@@ -1,8 +1,10 @@
 #![feature(iter_next_chunk)]
 
-use common::read_lines;
+use common::{read_lines, Timer};
 
 fn main() {
+    let timer = Timer::start();
+
     let mut stacks = load_stacks();
     let moves = load_moves();
 
@@ -26,6 +28,8 @@ fn main() {
     }
 
     println!("part 2 {}", top_crates(&stacks));
+
+    timer.stop();
 }
 
 fn top_crates(stacks: &Vec<Vec<u8>>) -> String {

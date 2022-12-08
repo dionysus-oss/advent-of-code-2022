@@ -1,10 +1,13 @@
 #![feature(array_chunks)]
 
 use common;
+use common::{read_lines, Timer};
 use std::collections::HashSet;
 
 fn main() {
-    let rucksacks: Vec<(HashSet<char>, HashSet<char>)> = common::read_lines("input.txt")
+    let timer = Timer::start();
+
+    let rucksacks: Vec<(HashSet<char>, HashSet<char>)> = read_lines("input.txt")
         .unwrap()
         .map(|line| {
             let line = line.unwrap();
@@ -46,6 +49,8 @@ fn main() {
         .sum();
 
     println!("badge score {}", badge_score);
+
+    timer.stop();
 }
 
 fn to_value(ch: u8) -> i32 {
