@@ -16,6 +16,8 @@ fn main() {
     let mut current_instruction: Box<dyn Instruction> = Box::new(NoopInstruction::new());
     current_instruction.do_work(&mut register_x);
 
+    let mut crt_line = String::new();
+
     let mut end_of_program = false;
     while !end_of_program {
         if current_instruction.do_work(&mut register_x) {
@@ -39,6 +41,19 @@ fn main() {
 
         if (cycle - 20) % 40 == 0 {
             signal_strength_total += cycle * register_x;
+        }
+
+        let crt_pos = (cycle - 1) % 40;
+
+        if register_x - 1 <= crt_pos && crt_pos <= register_x + 1 {
+            crt_line.push('#');
+        } else {
+            crt_line.push('.');
+        }
+
+        if cycle > 1 && crt_pos == 39 {
+            println!("{}", crt_line);
+            crt_line = String::new();
         }
 
         cycle += 1;
