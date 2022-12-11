@@ -1,0 +1,22 @@
+mod tests 2, 3
+product 6
+
+---
+
+working value 5
+add 4
+becomes 9
+
+9 % 6 is 3
+
+9 = 3 * 3 * 3 = (2 * 3) + 3
+
+---
+
+working value 5
+add 3
+becomes 8
+
+8 % 6 is 2
+
+8 = 2 * 2 * 2 = (3 * 2) + 2

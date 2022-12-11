@@ -4,7 +4,60 @@ use common::read_lines;
 use std::collections::VecDeque;
 
 fn main() {
-    let mut monkeys: Vec<Monkey> = read_lines("input.txt")
+    let mut monkeys: Vec<Monkey> = load_monkeys();
+
+    let reduce_worry_by_3x = Box::new(|v: u64| (v as f64 / 3.0).floor() as u64);
+
+    for _ in 0..20 {
+        for m in 0..monkeys.len() {
+            while monkeys.get(m).unwrap().items.len() > 0 {
+                let mut monkey = monkeys.get_mut(m).unwrap();
+                monkey.inspections += 1;
+
+                let item = monkey.items.pop_front().unwrap();
+                let (throw_to, new_priority) = monkey.calc(item, reduce_worry_by_3x.clone());
+
+                monkeys
+                    .get_mut(throw_to)
+                    .unwrap()
+                    .items
+                    .push_back(new_priority);
+            }
+        }
+    }
+
+    print_monkey_business(&mut monkeys);
+
+    let mut monkeys: Vec<Monkey> = load_monkeys();
+
+    let common_divs = monkeys.iter().map(|m| m.test_val).fold(1u64, |a, b| a * b);
+
+    let reduce_worry_by_common_divs = Box::new(move |v: u64| v % common_divs);
+
+    for _ in 0..10_000 {
+        for m in 0..monkeys.len() {
+            while monkeys.get(m).unwrap().items.len() > 0 {
+                let mut monkey = monkeys.get_mut(m).unwrap();
+                monkey.inspections += 1;
+
+                let item = monkey.items.pop_front().unwrap();
+                let (throw_to, new_priority) =
+                    monkey.calc(item, reduce_worry_by_common_divs.clone());
+
+                monkeys
+                    .get_mut(throw_to)
+                    .unwrap()
+                    .items
+                    .push_back(new_priority);
+            }
+        }
+    }
+
+    print_monkey_business(&mut monkeys);
+}
+
+fn load_monkeys() -> Vec<Monkey> {
+    read_lines("input.txt")
         .unwrap()
         .array_chunks::<6>()
         .map(|chunk| {
@@ -39,26 +92,10 @@ fn main() {
                 inspections: 0,
             }
         })
-        .collect();
+        .collect()
+}
 
-    for _ in 0..20 {
-        for m in 0..monkeys.len() {
-            while monkeys.get(m).unwrap().items.len() > 0 {
-                let mut monkey = monkeys.get_mut(m).unwrap();
-                monkey.inspections += 1;
-
-                let item = monkey.items.pop_front().unwrap();
-                let (throw_to, new_priority) = monkey.calc(item);
-
-                monkeys
-                    .get_mut(throw_to)
-                    .unwrap()
-                    .items
-                    .push_back(new_priority);
-            }
-        }
-    }
-
+fn print_monkey_business(monkeys: &mut Vec<Monkey>) {
     monkeys.sort_by(|m1, m2| m1.inspections.cmp(&m2.inspections));
     let top_two: Vec<usize> = monkeys
         .iter()
@@ -83,19 +120,17 @@ struct Monkey {
 }
 
 impl Monkey {
-    pub fn calc(&self, old_priority: u64) -> (usize, u64) {
+    pub fn calc(&self, old_priority: u64, reduce_worry: Box<dyn Fn(u64) -> u64>) -> (usize, u64) {
         let op_amount = match self.op_amount {
             Some(v) => v,
             None => old_priority,
         };
 
-        let new_priority = (match self.op.as_ref() {
+        let new_priority = reduce_worry(match self.op.as_ref() {
             "*" => old_priority * op_amount,
             "+" => old_priority + op_amount,
             _ => panic!("unknown operator"),
-        } as f64
-            / 3.0)
-            .floor() as u64;
+        });
 
         if new_priority % self.test_val == 0 {
             (self.true_target, new_priority)
