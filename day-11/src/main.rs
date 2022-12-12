@@ -1,9 +1,11 @@
 #![feature(iter_array_chunks)]
 
-use common::read_lines;
+use common::{read_lines, Timer};
 use std::collections::VecDeque;
 
 fn main() {
+    let timer = Timer::start();
+
     let mut monkeys: Vec<Monkey> = load_monkeys();
 
     let reduce_worry_by_3x = Box::new(|v: u64| (v as f64 / 3.0).floor() as u64);
@@ -54,6 +56,8 @@ fn main() {
     }
 
     print_monkey_business(&mut monkeys);
+
+    timer.stop();
 }
 
 fn load_monkeys() -> Vec<Monkey> {
