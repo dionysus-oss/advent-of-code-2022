@@ -18,14 +18,14 @@ fn main() {
     let (mut cave, y_bound) = load_cave(file);
 
     let mut done = false;
+    let mut total_sand_part_1 = 0;
     let mut total_sand = 0;
     loop {
         let mut sand_pos: (usize, usize) = (500, 0);
 
         loop {
-            if sand_pos.1 >= y_bound {
-                done = true;
-                break;
+            if sand_pos.1 >= y_bound && total_sand_part_1 == 0 {
+                total_sand_part_1 = total_sand;
             }
 
             let down = (sand_pos.0, sand_pos.1 + 1);
@@ -48,6 +48,9 @@ fn main() {
 
             cave[sand_pos.1][sand_pos.0] = CavePoint::Sand;
             total_sand += 1;
+            if sand_pos == (500, 0) {
+                done = true;
+            }
             break;
         }
 
@@ -56,7 +59,8 @@ fn main() {
         }
     }
 
-    println!("amount of sand {}", total_sand);
+    println!("amount of sand part 1 - {}", total_sand_part_1);
+    println!("amount of sand part 2 - {}", total_sand);
 
     timer.stop();
 }
@@ -64,7 +68,7 @@ fn main() {
 fn load_cave(file: String) -> (Vec<Vec<CavePoint>>, usize) {
     let mut cave: Vec<Vec<CavePoint>> = Vec::with_capacity(200);
     for _ in 0..200 {
-        cave.push(vec![CavePoint::Air; 600]);
+        cave.push(vec![CavePoint::Air; 1000]);
     }
 
     let mut y_bound = 0;
@@ -105,6 +109,8 @@ fn load_cave(file: String) -> (Vec<Vec<CavePoint>>, usize) {
     }
 
     cave.truncate(y_bound + 1);
+    cave.push(vec![CavePoint::Air; 1000]);
+    cave.push(vec![CavePoint::Rock; 1000]);
 
     return (cave, y_bound);
 }
