@@ -18,6 +18,13 @@ fn main() {
         .parse::<i32>()
         .unwrap();
 
+    // 20 for the sample input, 4000000 for the real input
+    let bound = args()
+        .nth(3)
+        .expect("provide bound")
+        .parse::<i32>()
+        .unwrap();
+
     let input: String = read_to_string(file).unwrap();
 
     let re: Regex = Regex::new(r"x=(-?\d+), y=(-?\d+).*x=(-?\d+), y=(-?\d+)").unwrap();
@@ -94,6 +101,66 @@ fn main() {
 
     let num_no_beacon = line.iter().filter(|x| !*x).count();
     println!("num no beacon {}", num_no_beacon);
+
+    let mut found_solution: (i32, i32) = (-1, -1);
+    'outer: for sensor in &sensors {
+        // top-right side
+        let mut y = sensor.sensor_pos.1 - sensor.sensor_radius as i32 - 1;
+        for x in sensor.sensor_pos.0..=(sensor.sensor_pos.0 + sensor.sensor_radius as i32 + 1) {
+            if is_solution((x, y), &sensors) && x > 0 && y > 0 && x < bound && y < bound {
+                found_solution = (x, y);
+                break 'outer;
+            }
+            y -= 1;
+        }
+
+        // bottom-right side
+        let mut y = sensor.sensor_pos.1 + sensor.sensor_radius as i32 + 1;
+        for x in sensor.sensor_pos.0..=(sensor.sensor_pos.0 + sensor.sensor_radius as i32 + 1) {
+            if is_solution((x, y), &sensors) && x > 0 && y > 0 && x < bound && y < bound {
+                found_solution = (x, y);
+                break 'outer;
+            }
+            y -= 1;
+        }
+
+        // bottom-left side
+        let mut y = sensor.sensor_pos.1;
+        for x in (sensor.sensor_pos.0 - sensor.sensor_radius as i32 - 1)..=sensor.sensor_pos.0 {
+            if is_solution((x, y), &sensors) && x > 0 && y > 0 && x < bound && y < bound {
+                found_solution = (x, y);
+                break 'outer;
+            }
+            y += 1;
+        }
+
+        // top-left side
+        let mut y = sensor.sensor_pos.1;
+        for x in (sensor.sensor_pos.0 - sensor.sensor_radius as i32 - 1)..=sensor.sensor_pos.0 {
+            if is_solution((x, y), &sensors) && x > 0 && y > 0 && x < bound && y < bound {
+                found_solution = (x, y);
+                break 'outer;
+            }
+            y -= 1;
+        }
+    }
+
+    println!("found solution {:?}", found_solution);
+    println!(
+        "answer {}",
+        found_solution.0 as u64 * 4_000_000 + found_solution.1 as u64
+    );
+}
+
+fn is_solution(point: (i32, i32), sensors: &Vec<Sensor>) -> bool {
+    for sensor in sensors {
+        if dist(sensor.sensor_pos.0, sensor.sensor_pos.1, point.0, point.1) <= sensor.sensor_radius
+        {
+            return false;
+        }
+    }
+
+    true
 }
 
 fn dist(x1: i32, y1: i32, x2: i32, y2: i32) -> u32 {
